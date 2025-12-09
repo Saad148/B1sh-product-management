@@ -12,79 +12,101 @@ const TableHead = ({ setProducts }: ProductListProps) => {
   const [openPrice, setOpenPrice] = useState<null | boolean>(null);
   const [openStock, setOpenStock] = useState<null | boolean>(null);
   const [openTitle, setOpenTitle] = useState<null | boolean>(null);
+  const [disabled, setDisabled] = useState(false);
 
   const fetchOriginal = async () => {
     try {
+      setDisabled(true);
       const response = await axios.get(`${BASE_URL}/products`);
       setProducts(response.data.products);
     } catch (err) {
       console.error(err);
+    } finally {
+      setDisabled(false);
     }
   };
 
   const fetchPriceAsc = async () => {
     try {
+      setDisabled(true);
       const response = await axios.get(
         `${BASE_URL}/products?sortBy=price&order=asc`
       );
       setProducts(response.data.products);
     } catch (err) {
       console.error(err);
+    } finally {
+      setDisabled(false);
     }
   };
 
   const fetchPriceDes = async () => {
     try {
+      setDisabled(true);
       const response = await axios.get(
         `${BASE_URL}/products?sortBy=price&order=desc`
       );
       setProducts(response.data.products);
     } catch (err) {
       console.error(err);
+    } finally {
+      setDisabled(false);
     }
   };
 
   const fetchStockAsc = async () => {
     try {
+      setDisabled(true);
       const response = await axios.get(
         `${BASE_URL}/products?sortBy=stock&order=asc`
       );
       setProducts(response.data.products);
     } catch (err) {
       console.error(err);
+    } finally {
+      setDisabled(false);
     }
   };
 
   const fetchStockDes = async () => {
     try {
+      setDisabled(true);
       const response = await axios.get(
         `${BASE_URL}/products?sortBy=stock&order=desc`
       );
       setProducts(response.data.products);
     } catch (err) {
       console.error(err);
+    } finally {
+      setDisabled(false);
     }
   };
 
   const fetchTitleAsc = async () => {
     try {
+      setDisabled(true);
       const response = await axios.get(
         `${BASE_URL}/products?sortBy=title&order=asc`
       );
       setProducts(response.data.products);
     } catch (err) {
       console.error(err);
+    } finally {
+      setDisabled(false);
     }
   };
 
   const fetchTitleDes = async () => {
     try {
+      setDisabled(true);
       const response = await axios.get(
         `${BASE_URL}/products?sortBy=title&order=desc`
       );
       setProducts(response.data.products);
     } catch (err) {
       console.error(err);
+    } finally {
+      setDisabled(false);
     }
   };
 
@@ -131,6 +153,7 @@ const TableHead = ({ setProducts }: ProductListProps) => {
     <tr className="text-2xl border bg-gray-200 px-2 border-gray-300">
       <th className="text-left pl-4 py-2 ">
         <button
+          disabled={disabled}
           className="hover:scale-115 transition-transform duration-300 ease-in-out flex cursor-pointer items-center gap-1"
           onClick={handleClickTitle}
         >
@@ -143,6 +166,7 @@ const TableHead = ({ setProducts }: ProductListProps) => {
       </th>
       <th className="cursor-pointer flex items-center py-2 justify-center gap-2.5">
         <button
+          disabled={disabled}
           className="hover:scale-115 transition-transform duration-300 ease-in-out flex cursor-pointer items-center gap-1"
           onClick={handleClickStock}
         >
@@ -156,6 +180,7 @@ const TableHead = ({ setProducts }: ProductListProps) => {
       <th className="">Availability Status</th>
       <th className="cursor-pointer flex items-center py-2 justify-center gap-2.5">
         <button
+          disabled={disabled}
           className="hover:scale-115 transition-transform duration-300 ease-in-out flex cursor-pointer items-center gap-1"
           onClick={handleClickPrice}
         >
