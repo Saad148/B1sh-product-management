@@ -2,12 +2,14 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../constants";
+// import type { IAuthUser } from "../types";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [success, setSuccess] = useState(false);
   const [errMsg, setErrMsg] = useState("");
+  // const [userData, setUserData] = useState<IAuthUser[]>([]);
 
   const navigate = useNavigate();
 
@@ -22,6 +24,8 @@ const Login = () => {
         }
       );
 
+      // setUserData(response.data);
+      // console.log(response.data);
       const accesstoken = response.data.accessToken;
       const refreshtoken = response.data.refreshToken;
 

@@ -21,10 +21,10 @@
 //       const res = await axios.get(`${BASE_URL}/auth/me`, {
 //         headers: { Authorization: `Bearer ${newToken}` },
 //       });
-
 //       return res.data;
 //     }
 //   }
 // };
+// getProfile();
 
-// use for getting the logged in userInfo (0)(0)
+// export default getProfile;
