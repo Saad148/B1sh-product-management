@@ -30,9 +30,6 @@ const ProductList = ({
         </p>
       )}
       {isLoading && <Loading />}
-      {/* {!isLoading && !error && (
-        
-      )} */}
 
       <div className="container mx-auto">
         <div className="max-h-[600px] overflow-y-auto border border-gray-300">
