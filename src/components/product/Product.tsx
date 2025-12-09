@@ -1,18 +1,47 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { BASE_URL } from "../../constants";
-import type { IProducts } from "../../types";
+import type { IAuthUser, IProducts } from "../../types";
 import ProductList from "./ProductList";
-import SearchProducts from "./SearchProducts";
 import ButtonLinks from "./ButtonLinks";
 import CreateProduct from "./crud-operation/CreateProduct";
+import { RefreshAccessToken } from "../RefreshAccessToken";
+import AuthUserData from "./AuthUserData";
 
 const Product = () => {
+  const [disabled, setDisabled] = useState(false);
   const [products, setProducts] = useState<IProducts[]>([]);
   const [search, setSearch] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingDelete, setIsLoadingDelete] = useState<null | number>(null);
   const [error, setError] = useState(null);
+  const token = localStorage.getItem("accessToken");
+  const [authUser, setAuthUser] = useState<IAuthUser>();
+
+  useEffect(() => {
+    const getProfile = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/auth/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setAuthUser(response.data);
+      } catch (err: any) {
+        if (err.response?.status === 401) {
+          const newToken = await RefreshAccessToken();
+
+          if (!newToken) {
+            return null;
+          }
+
+          const response = await axios.get(`${BASE_URL}/auth/me`, {
+            headers: { Authorization: `Bearer ${newToken}` },
+          });
+          setAuthUser(response.data);
+        }
+      }
+    };
+    getProfile();
+  }, [token]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -51,6 +80,7 @@ const Product = () => {
 
   const handledelete = async (id: number) => {
     try {
+      setDisabled(true);
       setIsLoadingDelete(id);
       await axios.delete(`${BASE_URL}/products/${id}`);
       const deletePro = products.filter((del) => del.id !== id);
@@ -59,14 +89,21 @@ const Product = () => {
       console.error(err);
     } finally {
       setIsLoadingDelete(null);
+      setDisabled(false);
     }
   };
 
   return (
     <>
-      <SearchProducts handleChange={handleChange} search={search} />
-      <CreateProduct products={products} setProducts={setProducts} />
+      {authUser && <AuthUserData authUser={authUser} />}
+      <CreateProduct
+        products={products}
+        setProducts={setProducts}
+        handleChange={handleChange}
+        search={search}
+      />
       <ProductList
+        disabled={disabled}
         error={error}
         isLoadingDelete={isLoadingDelete}
         isLoading={isLoading}

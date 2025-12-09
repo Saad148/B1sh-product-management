@@ -1,35 +1,63 @@
 type CreateProductProps = {
   products: IProducts[];
   setProducts: React.Dispatch<React.SetStateAction<IProducts[]>>;
+  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  search: string;
 };
 
 import { useState } from "react";
 import Modal from "./Modal";
 import CreateProductModal from "./CreateProductModal";
 import type { IProducts } from "../../../types";
+import { Search } from "lucide-react";
 
-const CreateProduct = ({ products, setProducts }: CreateProductProps) => {
+const CreateProduct = ({
+  products,
+  setProducts,
+  handleChange,
+  search,
+}: CreateProductProps) => {
   const [open, setOpen] = useState(false);
 
   return (
     <>
-      <div className="container mx-auto my-2">
+      <div className="container mx-auto my-5">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-3xl font-[poppins]">B1sh</p>
+            <p className="text-3xl font-[poppins] ">Products</p>
           </div>
-          <div>
-            <button
-              onClick={() => setOpen(true)}
-              className="cursor-pointer bg-blue-600 text-xl font-[poppins] text-white px-7 py-3 rounded-2xl"
+          <div className="flex items-center justify-center gap-6">
+            <form
+              className="text-center mx-auto relative"
+              onSubmit={(e) => e.preventDefault()}
             >
-              Create
-            </button>
+              <input
+                className="border border-gray-500 text-base py-2.5 pl-10 pr-10 rounded-xl w-full"
+                type="text"
+                placeholder="Search Products Here"
+                value={search}
+                onChange={handleChange}
+              />
+              <Search className="absolute top-2.5 left-2 w-5" />
+            </form>
+            <div>
+              <button
+                onClick={() => setOpen(true)}
+                className="hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer bg-blue-600 text-xl font-[poppins] text-white px-7 py-3 rounded-2xl"
+              >
+                Create
+              </button>
+            </div>
           </div>
         </div>
       </div>
+
       <Modal isOpen={open} onClose={() => setOpen(false)}>
-        <CreateProductModal products={products} setProducts={setProducts} />
+        <CreateProductModal
+          setOpen={setOpen}
+          products={products}
+          setProducts={setProducts}
+        />
       </Modal>
     </>
   );
