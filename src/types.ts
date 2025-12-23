@@ -12,7 +12,7 @@ interface IDimensions {
   depth: number;
 }
 
-export interface IProducts {
+export interface IProduct {
   id: number;
   title: string;
   description: string;

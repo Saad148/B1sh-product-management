@@ -2,20 +2,21 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../constants";
-// import type { IAuthUser } from "../types";
+import Loading from "./product/Loading";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [success, setSuccess] = useState(false);
   const [errMsg, setErrMsg] = useState("");
-  // const [userData, setUserData] = useState<IAuthUser[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
   const handlesubmit = async (e: any) => {
     e.preventDefault();
     try {
+      setIsLoading(true);
       const response = await axios.post(
         `${BASE_URL}/auth/login`,
         { username, password },
@@ -24,8 +25,6 @@ const Login = () => {
         }
       );
 
-      // setUserData(response.data);
-      // console.log(response.data);
       const accesstoken = response.data.accessToken;
       const refreshtoken = response.data.refreshToken;
 
@@ -43,6 +42,8 @@ const Login = () => {
       } else {
         setErrMsg("login failed");
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -52,55 +53,59 @@ const Login = () => {
 
   return (
     <>
-      <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-        <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8">
-          <h2 className="text-3xl font-bold text-center mb-2 text-gray-800">
-            Sign In
-          </h2>
-          <p className="text-xl font-[poppins] text-red-800 mb-4 text-center">
-            {errMsg}
-          </p>
-          <form className="space-y-5" onSubmit={handlesubmit}>
-            <div>
-              <label className="block text-gray-700 font-medium mb-1">
-                Username
-              </label>
-              <input
-                type="text"
-                className="w-full px-4 py-2 rounded-xl border border-gray-300 
-              focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                placeholder="Enter your username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-gray-700 font-medium mb-1">
-                Password
-              </label>
-              <input
-                type="password"
-                className="w-full px-4 py-2 rounded-xl border border-gray-300 
-              focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white 
-            font-semibold py-2.5 rounded-xl transition-all cursor-pointer"
-            >
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+          <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8">
+            <h2 className="text-3xl font-bold text-center mb-2 text-gray-800">
               Sign In
-            </button>
-          </form>
+            </h2>
+            <p className="text-xl font-[poppins] text-red-800 mb-4 text-center">
+              {errMsg}
+            </p>
+            <form className="space-y-5" onSubmit={handlesubmit}>
+              <div>
+                <label className="block text-gray-700 font-medium mb-1">
+                  Username
+                </label>
+                <input
+                  type="text"
+                  className="w-full px-4 py-2 rounded-xl border border-gray-300 
+              focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  placeholder="Enter your username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-gray-700 font-medium mb-1">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  className="w-full px-4 py-2 rounded-xl border border-gray-300 
+              focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white 
+            font-semibold py-2.5 rounded-xl transition-all cursor-pointer"
+              >
+                Sign In
+              </button>
+            </form>
+          </div>
         </div>
-      </div>
+      )}
     </>
   );
 };

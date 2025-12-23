@@ -1,15 +1,17 @@
 type CreateProductProps = {
-  products: IProducts[];
-  setProducts: React.Dispatch<React.SetStateAction<IProducts[]>>;
+  products: IProduct[];
+  setProducts: React.Dispatch<React.SetStateAction<IProduct[]>>;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   search: string;
 };
 
 import { useState } from "react";
 import Modal from "./Modal";
-import CreateProductModal from "./CreateProductModal";
-import type { IProducts } from "../../../types";
+import type { IProduct } from "../../../types";
 import { Search } from "lucide-react";
+import axios from "axios";
+import { BASE_URL } from "../../../constants";
+import ProductForm from "./ProductForm";
 
 const CreateProduct = ({
   products,
@@ -18,6 +20,16 @@ const CreateProduct = ({
   search,
 }: CreateProductProps) => {
   const [open, setOpen] = useState(false);
+
+  const handleSubmitForm = async (newProduct: IProduct) => {
+    const response = await axios.post(`${BASE_URL}/product/add`, newProduct);
+    const uniqueId = {
+      ...response.data,
+      id: Date.now(),
+      availabilityStatus: newProduct.availabilityStatus,
+    };
+    if (products) setProducts([uniqueId, ...products]);
+  };
 
   return (
     <>
@@ -53,11 +65,7 @@ const CreateProduct = ({
       </div>
 
       <Modal isOpen={open} onClose={() => setOpen(false)}>
-        <CreateProductModal
-          setOpen={setOpen}
-          products={products}
-          setProducts={setProducts}
-        />
+        <ProductForm handleSubmitForm={handleSubmitForm} setOpen={setOpen} />
       </Modal>
     </>
   );

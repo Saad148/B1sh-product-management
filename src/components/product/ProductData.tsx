@@ -1,12 +1,12 @@
 type ProductData = {
-  product: IProducts;
+  product: IProduct;
   handledelete: (id: number) => void;
-  setProducts: React.Dispatch<React.SetStateAction<IProducts[]>>;
+  setProducts: React.Dispatch<React.SetStateAction<IProduct[]>>;
   isLoadingDelete: null | number;
   disabled: boolean;
 };
 
-import type { IProducts } from "../../types";
+import type { IProduct } from "../../types";
 import TableBody from "./TableBody";
 
 const ProductData = ({
