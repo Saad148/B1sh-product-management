@@ -1,22 +1,38 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { BASE_URL } from "../../constants";
-import type { IAuthUser, IProducts } from "../../types";
+import type { IAuthUser, IProduct } from "../../types";
 import ProductList from "./ProductList";
-import ButtonLinks from "./ButtonLinks";
 import CreateProduct from "./crud-operation/CreateProduct";
 import { RefreshAccessToken } from "../RefreshAccessToken";
 import AuthUserData from "./AuthUserData";
+import Pagination from "./Pagination";
+import { useSearchParams } from "react-router-dom";
+import { UseDebounce } from "../UseDebounce";
 
 const Product = () => {
   const [disabled, setDisabled] = useState(false);
-  const [products, setProducts] = useState<IProducts[]>([]);
+  const [products, setProducts] = useState<IProduct[]>([]);
   const [search, setSearch] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingDelete, setIsLoadingDelete] = useState<null | number>(null);
   const [error, setError] = useState(null);
   const token = localStorage.getItem("accessToken");
   const [authUser, setAuthUser] = useState<IAuthUser>();
+  const [totalPages, setTotalPages] = useState(0);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const page = Number(searchParams.get("page")) || 1;
+  const debouncedSearch = UseDebounce(search, 500);
+
+  const selectPageHandler = (selectedPage: number) => {
+    if (
+      selectedPage >= 1 &&
+      selectedPage <= totalPages &&
+      selectedPage !== page
+    ) {
+      setSearchParams({ page: String(selectedPage) });
+    }
+  };
 
   useEffect(() => {
     const getProfile = async () => {
@@ -47,16 +63,23 @@ const Product = () => {
     const fetchProducts = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get(`${BASE_URL}/products`);
-        setProducts(response.data.products);
+        const response = await axios.get(
+          `https://dummyjson.com/products?limit=30&skip=${page * 30 - 30}`
+        );
+        console.log(response.data.products);
+
+        if (response && response.data.products) {
+          setProducts(response.data.products);
+          setTotalPages(Math.ceil(response?.data?.total / 30));
+        }
       } catch (err: any) {
-        setError(err?.message);
+        setError(err.message);
       } finally {
         setIsLoading(false);
       }
     };
     fetchProducts();
-  }, []);
+  }, [page]);
 
   const fetchSearch = async (value: string) => {
     try {
@@ -72,10 +95,13 @@ const Product = () => {
     }
   };
 
+  useEffect(() => {
+    fetchSearch(debouncedSearch);
+  }, [debouncedSearch]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearch(value);
-    fetchSearch(value);
   };
 
   const handledelete = async (id: number) => {
@@ -111,7 +137,13 @@ const Product = () => {
         products={products}
         setProducts={setProducts}
       />
-      <ButtonLinks />
+      {!isLoading && (
+        <Pagination
+          page={page}
+          totalPages={totalPages}
+          selectPageHandler={selectPageHandler}
+        />
+      )}
     </>
   );
 };

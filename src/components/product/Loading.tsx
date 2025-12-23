@@ -1,6 +1,6 @@
 const Loading = () => {
   return (
-    <button className="bg-linear-to-r absolute top-[50%] left-[45%] from-blue-600 to-purple-600 text-white font-bold py-3 px-6 rounded-full shadow-lg flex items-center transition duration-300 transform hover:scale-105 active:scale-95">
+    <button className="bg-linear-to-r absolute top-[50%] left-[45%] bg-blue-600 text-white font-bold py-3 px-6 rounded-full shadow-lg flex items-center transition duration-300 transform hover:scale-105 active:scale-95">
       <svg
         viewBox="0 0 24 24"
         fill="none"

@@ -1,6 +1,6 @@
 type ProductListProps = {
-  products: IProducts[];
-  setProducts: React.Dispatch<React.SetStateAction<IProducts[]>>;
+  products: IProduct[];
+  setProducts: React.Dispatch<React.SetStateAction<IProduct[]>>;
   handledelete: (id: number) => void;
   isLoading: boolean;
   isLoadingDelete: null | number;
@@ -8,10 +8,10 @@ type ProductListProps = {
   disabled: boolean;
 };
 // import { useNavigate } from "react-router-dom";
-import type { IProducts } from "../../types";
-import ProductData from "./ProductData";
+import type { IProduct } from "../../types";
 import TableHead from "./TableHead";
 import Loading from "./Loading";
+import TableBody from "./TableBody";
 
 const ProductList = ({
   disabled,
@@ -32,7 +32,7 @@ const ProductList = ({
       {isLoading && <Loading />}
 
       <div className="container mx-auto">
-        <div className="max-h-[600px] overflow-y-auto border border-gray-300">
+        <div className="max-h-[700px] overflow-y-auto border border-gray-300">
           <table className="w-full border-collapse text-center font-poppins">
             <thead className="sticky -top-[0.5px] bg-white z-10">
               <TableHead setProducts={setProducts} />
@@ -40,10 +40,10 @@ const ProductList = ({
             {!isLoading && (
               <tbody>
                 {products.map((product) => (
-                  <ProductData
+                  <TableBody
+                    key={product.id}
                     disabled={disabled}
                     isLoadingDelete={isLoadingDelete}
-                    key={product.id}
                     product={product}
                     handledelete={handledelete}
                     setProducts={setProducts}

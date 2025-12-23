@@ -1,12 +1,12 @@
 type ProductListProps = {
-  setProducts: React.Dispatch<React.SetStateAction<IProducts[]>>;
+  setProducts: React.Dispatch<React.SetStateAction<IProduct[]>>;
 };
 
 import axios from "axios";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
 import { BASE_URL } from "../../constants";
-import type { IProducts } from "../../types";
+import type { IProduct } from "../../types";
 
 const TableHead = ({ setProducts }: ProductListProps) => {
   const [openPrice, setOpenPrice] = useState<null | boolean>(null);

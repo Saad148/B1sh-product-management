@@ -1,16 +1,18 @@
 type TableBodyProps = {
-  product: IProducts;
+  product: IProduct;
   handledelete: (id: number) => void;
-  setProducts: React.Dispatch<React.SetStateAction<IProducts[]>>;
+  setProducts: React.Dispatch<React.SetStateAction<IProduct[]>>;
   isLoadingDelete: number | null;
   disabled: boolean;
 };
 
 import { Pencil } from "lucide-react";
-import type { IProducts } from "../../types";
+import type { IProduct } from "../../types";
 import Modal from "./crud-operation/Modal";
 import { useState } from "react";
-import EditProduct from "./crud-operation/EditProduct";
+import axios from "axios";
+import { BASE_URL } from "../../constants";
+import ProductForm from "./crud-operation/ProductForm";
 
 const TableBody = ({
   disabled,
@@ -20,6 +22,17 @@ const TableBody = ({
   setProducts,
 }: TableBodyProps) => {
   const [open, setOpen] = useState(false);
+
+  const handleSubmitForm = async (newProduct: IProduct) => {
+    const id = product.id;
+    const response = await axios.patch(
+      `${BASE_URL}/products/${id}`,
+      newProduct
+    );
+    setProducts((product) =>
+      product.map((p) => (p.id === id ? { ...p, ...response.data } : p))
+    );
+  };
 
   return (
     <>
@@ -46,11 +59,10 @@ const TableBody = ({
         </td>
       </tr>
       <Modal isOpen={open} onClose={() => setOpen(false)}>
-        <EditProduct
+        <ProductForm
+          handleSubmitForm={handleSubmitForm}
           product={product}
           setOpen={setOpen}
-          id={product.id}
-          setProducts={setProducts}
         />
       </Modal>
     </>
